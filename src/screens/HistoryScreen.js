@@ -1,57 +1,66 @@
 import React, {Component} from 'react';
-import {Image, Alert} from 'react-native';
+import {Image, Alert, StyleSheet} from 'react-native';
 import {FloatingAction} from 'react-native-floating-action';
+import AsyncStorage from '@react-native-community/async-storage';
 import {
   List,
   Button,
   Container,
   Content,
   Text,
-  Header,
   ListItem,
+  Body,
+  Left,
+  Right,
+  Form,
 } from 'native-base';
-const Arr = [
-  'nam',
-  'thao',
-  'diep',
-  'ha',
-  'thao',
-  'diep',
-  'ha',
-  'thao',
-  'diep',
-  'ha',
-  'thao',
-  'diep',
-  'ha',
-  'thao',
-  'diep',
-  'ha',
-];
 export default class HistoryScreen extends Component {
   static navigationOptions = {
     swipeEnabled: true,
-    tabBarIcon: ({tintColor}) => {
-      return (
-        <Image
-          source={require('../image/history.png')}
-          style={{tintColor: tintColor, width: 26, height: 26}}></Image>
-      );
-    },
+    title: 'Quản Lý Chi Tiêu',
   };
+  constructor(props) {
+    super(props);
+    this.state = {
+      dataList: [],
+    };
+  }
+  async componentDidMount() {
+    try {
+      let keys = await AsyncStorage.getAllKeys();
+      keys.forEach(async key => {
+        let item = await JSON.parse(await AsyncStorage.getItem(key));
+        let data = this.state.dataList.concat(item);
+        this.setState({dataList: data});
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   render() {
     return (
       <Container>
-        <Content>
-          <List
-            dataArray={Arr}
-            renderRow={item => (
-              <ListItem button onPress={() => Alert.alert('hello')}>
-                <Text>{item}</Text>
-                <Text note>chao cac ban</Text>
-              </ListItem>
-            )}></List>
-        </Content>
+        <List
+          dataArray={this.state.dataList}
+          keyExtractor={item => item.id}
+          renderRow={item => (
+            <ListItem button style={styles.container}>
+              <Form>
+                <Text style={styles.date}>{item.chosenDate}</Text>
+                <Form style={styles.botcontaine}>
+                  <Text note style={styles.danhmuc}>
+                    {item.selected}
+                  </Text>
+                  <Text note style={styles.money}>
+                    {item.money}
+                  </Text>
+                </Form>
+                <Text note>
+                  {item.note === '' ? item.note : `Ghi chú :${item.note}`}
+                </Text>
+              </Form>
+            </ListItem>
+          )}></List>
         <FloatingAction
           onPressMain={() => {
             this.props.navigation.navigate('Add');
@@ -61,3 +70,29 @@ export default class HistoryScreen extends Component {
     );
   }
 }
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#F0F8FF',
+    marginRight: 10,
+    marginLeft: 10,
+    marginTop: 5,
+    marginBottom: 5,
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
+  date: {
+    marginLeft: 100,
+  },
+  danhmuc: {
+    marginTop: 40,
+  },
+  money: {
+    marginTop: 40,
+    color: '#9400D3',
+  },
+  botcontaine: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: 290,
+  },
+});

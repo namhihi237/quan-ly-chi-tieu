@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import {Actions} from 'react-native-router-flux';
 import {
   Container,
   Content,
@@ -13,13 +15,49 @@ import {
   Textarea,
   DatePicker,
 } from 'native-base';
+var item = {
+  id: '',
+  money: '',
+  selected: '',
+  type: '',
+  note: '',
+  chosenDate: '',
+};
+const danhmucs = {
+  danhmuc01: 'Mua sắm',
+  danhmuc02: 'Học Phí',
+  danhmuc03: 'Ăn Uống',
+  danhmuc04: 'Đổ Xăng',
+  danhmuc05: 'Tiền Nhà',
+  danhmuc06: 'Tiền Điện',
+  danhmuc07: 'Tiền Thẻ ĐT',
+  danhmuc08: 'Tiền Tán Gái/Trai',
+  danhmuc09: 'Mừng Cưới',
+  danhmuc10: 'Tiền Sửa Đồ',
+  danhmuc11: 'Làm Đẹp',
+  danhmuc12: 'Cà Phê Trà Sữa',
+  danhmuc13: 'Khám Bệnh',
+  danhmuc14: 'Đầu Tư Kinh Doanh',
+  danhmuc15: 'Tiền Lương',
+  danhmuc16: 'Phụ Cấp',
+  danhmuc17: 'Tiết Kiệm',
+};
+const loais = {
+  loai01: 'Tiền Chi',
+  loai02: 'Tiền Thu',
+  loai03: 'Cho Vay',
+  loai04: 'Nợ',
+};
 export default class AddScreen extends Component {
+  static navigationOptions = {
+    title: 'Thêm Chi Tiêu',
+  };
   constructor(props) {
     super(props);
     this.state = {
       money: '',
       selected: 'danhmuc01',
-      type: 'loai',
+      type: 'loai01',
       chosenDate: new Date(),
       note: '',
     };
@@ -44,15 +82,22 @@ export default class AddScreen extends Component {
   handleChangeTextNote = text => {
     this.setState({note: text});
   };
-  handleButtonSave = () => {
+  handleButtonSave = async () => {
     const {money, selected, type, note, chosenDate} = this.state;
-    this.props.navigation.setParams({
-      money,
-      selected,
-      type,
-      note,
-      chosenDate,
-    });
+    var newItem = item;
+    newItem.id = Date.now().toString();
+    newItem.money = money;
+    newItem.selected = danhmucs[selected];
+    newItem.type = loais[type];
+    newItem.note = note;
+    newItem.chosenDate = chosenDate.toString().substr(4, 12);
+    let key = newItem.id;
+    try {
+      await AsyncStorage.setItem(key, JSON.stringify(newItem));
+      this.props.navigation.push('History');
+    } catch (error) {
+      console.log(error);
+    }
   };
   render() {
     return (
@@ -81,7 +126,7 @@ export default class AddScreen extends Component {
               <Picker.Item label="Tiền Nhà" value="danhmuc05" />
               <Picker.Item label="Tiền Điện" value="danhmuc06" />
               <Picker.Item label="Tiền Thẻ ĐT" value="danhmuc07" />
-              <Picker.Item label="Tiền Internet" value="danhmuc08" />
+              <Picker.Item label="Tiền tán gái/trai" value="danhmuc08" />
               <Picker.Item label="Mừng Cưới" value="danhmuc09" />
               <Picker.Item label="Tiền Sửa Đồ" value="danhmuc10" />
               <Picker.Item label="Làm Đẹp" value="danhmuc11" />
@@ -100,9 +145,9 @@ export default class AddScreen extends Component {
               mode="dropdown"
               selectedValue={this.state.type}
               onValueChange={this.onValueChangeType.bind(this)}>
-              <Picker.Item label="Thu tiền" value="loai01" />
-              <Picker.Item label="Chi tiền" value="loai02" />
-              <Picker.Item label="Cho vay" value="loai03" />
+              <Picker.Item label="Tiền Chi" value="loai01" />
+              <Picker.Item label="Tiền Thu" value="loai02" />
+              <Picker.Item label="Cho Vay" value="loai03" />
               <Picker.Item label="Nợ" value="loai04" />
             </Picker>
           </Content>

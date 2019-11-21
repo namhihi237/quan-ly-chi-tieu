@@ -12,10 +12,21 @@ import ReportScreen from './src/screens/ReportScreen.js';
 import AddScreen from './src/screens/AddScreen';
 import React from 'react';
 import {Image} from 'react-native';
-const HistoryStack = createStackNavigator({
-  History: {screen: HistoryScreen},
-  Add: {screen: AddScreen},
-});
+const HistoryStack = createStackNavigator(
+  {
+    History: {screen: HistoryScreen},
+    Add: {screen: AddScreen},
+  },
+  {
+    defaultNavigationOptions: {
+      title: 'Quản Lý Chi Tiêu',
+      headerTintColor: '#00BFFF',
+      headerStyle: {
+        backgroundColor: '#008B8B',
+      },
+    },
+  },
+);
 // const SettingStack = createStackNavigator({
 //   Setting: {screen: SettingScreen},
 //   Detail: {screen: DetailScreen},
