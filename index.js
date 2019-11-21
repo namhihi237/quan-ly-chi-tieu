@@ -5,14 +5,17 @@
 import {AppRegistry} from 'react-native';
 import {name as appName} from './app.json';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
+import {createStackNavigator} from 'react-navigation-stack';
 import {createAppContainer} from 'react-navigation';
 import HistoryScreen from './src/screens/HistoryScreen.js';
 import ReportScreen from './src/screens/ReportScreen.js';
-
-// const HomeStack = createStackNavigator({
-//   Home: {screen: HomeScreen},
-//   Detail: {screen: DetailScreen},
-// });
+import AddScreen from './src/screens/AddScreen';
+import React from 'react';
+import {Image} from 'react-native';
+const HistoryStack = createStackNavigator({
+  History: {screen: HistoryScreen},
+  Add: {screen: AddScreen},
+});
 // const SettingStack = createStackNavigator({
 //   Setting: {screen: SettingScreen},
 //   Detail: {screen: DetailScreen},
@@ -25,10 +28,28 @@ const TabnavigatorConfigs = {
     activeTintColor: '#405BDB',
     inactiveTintColor: '#9B9B9B',
   },
+  defaultNavigationOptions: ({navigation}) => ({
+    tabBarIcon: ({tintColor}) => {
+      const {routeName} = navigation.state;
+      if (routeName === 'History') {
+        return (
+          <Image
+            source={require('./src/image/history.png')}
+            style={{tintColor: tintColor, width: 26, height: 26}}></Image>
+        );
+      } else {
+        return (
+          <Image
+            source={require('./src/image/report.png')}
+            style={{tintColor: tintColor, width: 26, height: 26}}></Image>
+        );
+      }
+    },
+  }),
 };
 const tab = createBottomTabNavigator(
   {
-    History: {screen: HistoryScreen},
+    History: {screen: HistoryStack},
     Report: {screen: ReportScreen},
   },
   TabnavigatorConfigs,

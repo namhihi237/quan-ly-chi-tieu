@@ -1,5 +1,33 @@
 import React, {Component} from 'react';
-import {Button, Text, View, Image} from 'react-native';
+import {Image, Alert} from 'react-native';
+import {FloatingAction} from 'react-native-floating-action';
+import {
+  List,
+  Button,
+  Container,
+  Content,
+  Text,
+  Header,
+  ListItem,
+} from 'native-base';
+const Arr = [
+  'nam',
+  'thao',
+  'diep',
+  'ha',
+  'thao',
+  'diep',
+  'ha',
+  'thao',
+  'diep',
+  'ha',
+  'thao',
+  'diep',
+  'ha',
+  'thao',
+  'diep',
+  'ha',
+];
 export default class HistoryScreen extends Component {
   static navigationOptions = {
     swipeEnabled: true,
@@ -13,9 +41,23 @@ export default class HistoryScreen extends Component {
   };
   render() {
     return (
-      <View>
-        <Text>Lich Su</Text>
-      </View>
+      <Container>
+        <Content>
+          <List
+            dataArray={Arr}
+            renderRow={item => (
+              <ListItem button onPress={() => Alert.alert('hello')}>
+                <Text>{item}</Text>
+                <Text note>chao cac ban</Text>
+              </ListItem>
+            )}></List>
+        </Content>
+        <FloatingAction
+          onPressMain={() => {
+            this.props.navigation.navigate('Add');
+          }}
+          showBackground={false}></FloatingAction>
+      </Container>
     );
   }
 }

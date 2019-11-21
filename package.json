@@ -10,9 +10,12 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.6.3",
     "@react-native-community/cli-platform-android": "^3.0.3",
+    "native-base": "^2.13.8",
     "react": "16.9.0",
     "react-native": "0.61.4",
+    "react-native-floating-action": "^1.19.1",
     "react-native-gesture-handler": "^1.5.0",
     "react-native-reanimated": "^1.4.0",
     "react-navigation": "^4.0.10",
