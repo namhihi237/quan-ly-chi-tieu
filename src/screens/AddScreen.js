@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {
   Container,
   Content,
@@ -9,7 +9,6 @@ import {
   Input,
   Label,
   Item,
-  Icon,
   Picker,
   Textarea,
   DatePicker,
@@ -18,8 +17,9 @@ export default class AddScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: 'key01',
-      type: 'key01',
+      money: '',
+      selected: 'danhmuc01',
+      type: 'loai',
       chosenDate: new Date(),
       note: '',
     };
@@ -38,8 +38,21 @@ export default class AddScreen extends Component {
   setDate(newDate) {
     this.setState({chosenDate: newDate});
   }
+  handleChangTextMoney = text => {
+    this.setState({money: text});
+  };
   handleChangeTextNote = text => {
     this.setState({note: text});
+  };
+  handleButtonSave = () => {
+    const {money, selected, type, note, chosenDate} = this.state;
+    this.props.navigation.setParams({
+      money,
+      selected,
+      type,
+      note,
+      chosenDate,
+    });
   };
   render() {
     return (
@@ -48,32 +61,49 @@ export default class AddScreen extends Component {
           <Form style={styles.formMoneyContainer}>
             <Item rounded style={styles.InputMoney}>
               <Label style={styles.labelMoney}>Số Tiền</Label>
-              <Input placeholder="Nhập số tiền"></Input>
+              <Input
+                placeholder="Nhập số tiền"
+                keyboardType="numeric"
+                onChangeText={this.handleChangTextMoney}></Input>
             </Item>
           </Form>
           <Content style={styles.danhmuc}>
-            <Text>Danh Muc</Text>
+            <Text>Danh Mục</Text>
             <Picker
               style={styles.pick}
               mode="dropdown"
               selectedValue={this.state.selected}
               onValueChange={this.onValueChangeMoney.bind(this)}>
-              <Picker.Item label="Mua sắm" value="key01" />
-              <Picker.Item label="Học Phí" value="key02" />
-              <Picker.Item label="Ăn uống" value="key03" />
+              <Picker.Item label="Mua sắm" value="danhmuc01" />
+              <Picker.Item label="Học Phí" value="danhmuc02" />
+              <Picker.Item label="Ăn Uống" value="danhmuc03" />
+              <Picker.Item label="Đổ Xăng" value="danhmuc04" />
+              <Picker.Item label="Tiền Nhà" value="danhmuc05" />
+              <Picker.Item label="Tiền Điện" value="danhmuc06" />
+              <Picker.Item label="Tiền Thẻ ĐT" value="danhmuc07" />
+              <Picker.Item label="Tiền Internet" value="danhmuc08" />
+              <Picker.Item label="Mừng Cưới" value="danhmuc09" />
+              <Picker.Item label="Tiền Sửa Đồ" value="danhmuc10" />
+              <Picker.Item label="Làm Đẹp" value="danhmuc11" />
+              <Picker.Item label="Cà Phê Trà Sữa" value="danhmuc12" />
+              <Picker.Item label="Khám Bệnh" value="danhmuc13" />
+              <Picker.Item label="Đầu Tư Kinh Doanh" value="danhmuc14" />
+              <Picker.Item label="Tiền Lương" value="danhmuc15" />
+              <Picker.Item label="Phụ Cấp" value="danhmuc16" />
+              <Picker.Item label="Tiết Kiệm" value="danhmuc17" />
             </Picker>
           </Content>
           <Content style={styles.danhmuc}>
-            <Text>Loai thu chi</Text>
+            <Text>Loại Thu Chi</Text>
             <Picker
               style={styles.pick}
               mode="dropdown"
               selectedValue={this.state.type}
               onValueChange={this.onValueChangeType.bind(this)}>
-              <Picker.Item label="Thu tiền" value="key01" />
-              <Picker.Item label="Chi tiền" value="key02" />
-              <Picker.Item label="Cho vay" value="key03" />
-              <Picker.Item label="Nợ" value="key04" />
+              <Picker.Item label="Thu tiền" value="loai01" />
+              <Picker.Item label="Chi tiền" value="loai02" />
+              <Picker.Item label="Cho vay" value="loai03" />
+              <Picker.Item label="Nợ" value="loai04" />
             </Picker>
           </Content>
           <Content padder>
@@ -107,7 +137,10 @@ export default class AddScreen extends Component {
             <Text>Date: {this.state.chosenDate.toString().substr(4, 12)}</Text>
           </Content>
           <Form style={styles.buttonContainer}>
-            <Button success style={styles.buttonSave}>
+            <Button
+              success
+              style={styles.buttonSave}
+              onPress={this.handleButtonSave}>
               <Text style={styles.buttonText}>Save</Text>
             </Button>
           </Form>
@@ -134,7 +167,7 @@ const styles = StyleSheet.create({
   },
   labelDanhMuc: {
     marginLeft: 10,
-    marginRight: 80,
+    marginRight: 50,
   },
   danhmuc: {
     borderWidth: 1,
@@ -146,13 +179,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   pick: {
-    marginRight: 250,
+    marginRight: 100,
   },
   buttonSave: {
     width: 150,
+    borderRadius: 6,
   },
   buttonContainer: {
     alignItems: 'center',
+    marginTop: 30,
   },
   buttonText: {
     marginLeft: 40,
