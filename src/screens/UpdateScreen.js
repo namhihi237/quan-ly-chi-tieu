@@ -42,11 +42,36 @@ const danhmucs = {
   danhmuc16: 'Phụ Cấp',
   danhmuc17: 'Tiết Kiệm',
 };
+const danhmucsSer = {
+  'Mua sắm': 'danhmuc01',
+  'Học Phí': 'danhmuc02',
+  'Ăn Uống': 'danhmuc03',
+  'Đổ Xăng': 'danhmuc04',
+  'Tiền Nhà': 'danhmuc05',
+  'Tiền Điện': 'danhmuc06',
+  'Tiền Thẻ ĐT': 'danhmuc07',
+  'Tiền Tán Gái/Trai': 'danhmuc08',
+  'Mừng Cưới': 'danhmuc09',
+  'Tiền Sửa Đồ': 'danhmuc10',
+  'Làm Đẹp': 'danhmuc11',
+  'Cà Phê Trà Sữa': 'danhmuc12',
+  'Khám Bệnh': 'danhmuc13',
+  'Đầu Tư Kinh Doanh': 'danhmuc14',
+  'Tiền Lương': 'danhmuc15',
+  'Phụ Cấp': 'danhmuc16',
+  'Tiết Kiệm': 'danhmuc17',
+};
 const loais = {
   loai01: 'Tiền Chi',
   loai02: 'Tiền Thu',
   loai03: 'Cho Vay',
   loai04: 'Nợ',
+};
+const loaisSer = {
+  'Tiền Chi': 'loai01',
+  'Tiền Thu': 'loai02',
+  'Cho Vay': 'loai03',
+  Nợ: 'loai04',
 };
 export default class UpdateScreen extends Component {
   static navigationOptions = {
@@ -56,8 +81,8 @@ export default class UpdateScreen extends Component {
     super(props);
     this.state = {
       money: this.props.navigation.getParam('money'),
-      selected: this.props.navigation.getParam('selected'),
-      type: this.props.navigation.getParam('type'),
+      selected: danhmucsSer[this.props.navigation.getParam('selected')],
+      type: loaisSer[this.props.navigation.getParam('type')],
       chosenDate: new Date(),
       note: this.props.navigation.getParam('note'),
       chosenTime: '',
@@ -87,7 +112,7 @@ export default class UpdateScreen extends Component {
   handleButtonSave = async () => {
     const {money, selected, type, note, chosenDate} = this.state;
     var newItem = item;
-    newItem.id = Date.now().toString();
+    newItem.id = this.props.navigation.getParam('id');
     newItem.money = money;
     newItem.selected = danhmucs[selected];
     newItem.type = loais[type];
