@@ -41,17 +41,6 @@ export default class HistoryScreen extends Component {
     }
   }
 
-  option = () => {
-    Alert.alert(`Alert`, `Nhấn lựa chọn của bạn`, [
-      {
-        text: 'Edit',
-        onPress: () => {
-          this.props.navigation.navigate('Edit');
-        },
-      },
-      {text: 'Delete', onPress: () => {}},
-    ]);
-  };
   render() {
     return (
       <Container>
@@ -62,7 +51,24 @@ export default class HistoryScreen extends Component {
             <ListItem
               button
               style={styles.container}
-              onLongPress={this.option.bind(this)}>
+              onLongPress={() => {
+                Alert.alert(`Alert`, `Nhấn lựa chọn của bạn`, [
+                  {
+                    text: 'Edit',
+                    onPress: () => {
+                      this.props.navigation.navigate('Edit', {
+                        money: item.money,
+                        selected: item.selected,
+                        type: item.type,
+                        chosenDate: item.chosenDate,
+                        note: item.note,
+                      });
+                    },
+                  },
+                  {text: 'Delete', onPress: () => {}},
+                  {text: 'Cancel', onPress: () => {}},
+                ]);
+              }}>
               <Form>
                 <Form style={styles.settingContainer}>
                   <Text style={styles.date}>{item.chosenDate}</Text>
@@ -72,8 +78,10 @@ export default class HistoryScreen extends Component {
                     {item.selected}
                   </Text>
                   <Text note style={styles.money}>
-                    {item.money!=0? item.money : 0}
-                    <Text note style={styles.money}>vnđ</Text>
+                    {item.money != 0 ? item.money : 0}
+                    <Text note style={styles.money}>
+                      vnđ
+                    </Text>
                   </Text>
                 </Form>
                 <Text note>

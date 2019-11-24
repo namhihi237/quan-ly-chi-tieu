@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import DateTimePicker from 'react-native-modal-datetime-picker';
 import {
   Container,
   Content,
@@ -47,18 +48,20 @@ const loais = {
   loai03: 'Cho Vay',
   loai04: 'Nợ',
 };
-export default class AddScreen extends Component {
+export default class UpdateScreen extends Component {
   static navigationOptions = {
     title: 'Sửa Chi Tiêu',
   };
   constructor(props) {
     super(props);
     this.state = {
-      money: '',
-      selected: 'danhmuc01',
-      type: 'loai01',
+      money: this.props.navigation.getParam('money'),
+      selected: this.props.navigation.getParam('selected'),
+      type: this.props.navigation.getParam('type'),
       chosenDate: new Date(),
-      note: '',
+      note: this.props.navigation.getParam('note'),
+      chosenTime: '',
+      isDateTimePickerVisible: false,
     };
     this.setDate = this.setDate.bind(this);
   }
@@ -98,6 +101,17 @@ export default class AddScreen extends Component {
       console.log(error);
     }
   };
+  showDateTimePicker = () => {
+    this.setState({isDateTimePickerVisible: true});
+    console.log(this.state.chosenTime);
+  };
+  hideDateTimePicker = () => {
+    this.setState({isDateTimePickerVisible: false});
+  };
+  handleDatePicked = date => {
+    console.log('A date has been picked: ', date);
+    this.hideDateTimePicker();
+  };
   render() {
     return (
       <Container>
@@ -108,6 +122,7 @@ export default class AddScreen extends Component {
               <Input
                 placeholder="Nhập số tiền"
                 keyboardType="numeric"
+                defaultValue={this.state.money}
                 onChangeText={this.handleChangTextMoney}></Input>
             </Item>
           </Form>
@@ -158,26 +173,44 @@ export default class AddScreen extends Component {
                 rowSpan={3}
                 bordered
                 placeholder="Nhập ghi chú..."
+                defaultValue={this.state.note}
               />
             </Form>
           </Content>
           <Content>
             <Text>Thời Gian: </Text>
-            <DatePicker
-              defaultDate={new Date()}
-              minimumDate={new Date(2018, 1, 1)}
-              maximumDate={new Date(2020, 12, 31)}
-              locale={'en'}
-              timeZoneOffsetInMinutes={undefined}
-              modalTransparent={false}
-              animationType={'fade'}
-              androidMode={'default'}
-              placeHolderText="Select date"
-              textStyle={{color: 'green'}}
-              placeHolderTextStyle={{color: 'red'}}
-              onDateChange={this.setDate}
-              disabled={false}
-            />
+            <Form style={styles.dateTime}>
+              <Button style={styles.buttonTime}>
+                <DatePicker
+                  defaultDate={new Date()}
+                  minimumDate={new Date(2018, 1, 1)}
+                  maximumDate={new Date(2020, 12, 31)}
+                  locale={'vi'}
+                  timeZoneOffsetInMinutes={undefined}
+                  modalTransparent={false}
+                  animationType={'fade'}
+                  androidMode={'default'}
+                  placeHolderText="Select date"
+                  textStyle={{color: 'green'}}
+                  placeHolderTextStyle={{color: 'red', fontSize: 18}}
+                  onDateChange={this.setDate}
+                  disabled={false}
+                />
+              </Button>
+
+              <Button
+                onPress={this.showDateTimePicker}
+                style={styles.buttonTime}>
+                <Text>Select Time</Text>
+              </Button>
+              <DateTimePicker
+                isVisible={this.state.isDateTimePickerVisible}
+                onConfirm={this.handleDatePicked}
+                onCancel={this.hideDateTimePicker}
+                mode="time"
+                timePickerModeAndroid="clock"
+              />
+            </Form>
             <Text>Date: {this.state.chosenDate.toString().substr(4, 12)}</Text>
           </Content>
           <Form style={styles.buttonContainer}>
@@ -231,9 +264,16 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 20,
   },
   buttonText: {
     marginLeft: 40,
+  },
+  buttonTime: {
+    width: 150,
+  },
+  dateTime: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
