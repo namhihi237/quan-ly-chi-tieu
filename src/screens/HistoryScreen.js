@@ -72,7 +72,8 @@ export default class HistoryScreen extends Component {
                     {item.selected}
                   </Text>
                   <Text note style={styles.money}>
-                    {item.money}
+                    {item.money!=0? item.money : 0}
+                    <Text note style={styles.money}>vnđ</Text>
                   </Text>
                 </Form>
                 <Text note>
