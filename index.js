@@ -10,12 +10,14 @@ import {createAppContainer} from 'react-navigation';
 import HistoryScreen from './src/screens/HistoryScreen.js';
 import ReportScreen from './src/screens/ReportScreen.js';
 import AddScreen from './src/screens/AddScreen';
+import UpdateScreen from './src/screens/UpdateScreen';
 import React from 'react';
 import {Image} from 'react-native';
 const HistoryStack = createStackNavigator(
   {
     History: {screen: HistoryScreen},
     Add: {screen: AddScreen},
+    Edit: {screen: UpdateScreen},
   },
   {
     defaultNavigationOptions: {

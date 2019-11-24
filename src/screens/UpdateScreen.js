@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import DateTimePicker from 'react-native-modal-datetime-picker';
 import {
   Container,
   Content,
@@ -50,7 +49,7 @@ const loais = {
 };
 export default class AddScreen extends Component {
   static navigationOptions = {
-    title: 'Thêm Chi Tiêu',
+    title: 'Sửa Chi Tiêu',
   };
   constructor(props) {
     super(props);
@@ -60,8 +59,6 @@ export default class AddScreen extends Component {
       type: 'loai01',
       chosenDate: new Date(),
       note: '',
-      chosenTime: '',
-      isDateTimePickerVisible: false,
     };
     this.setDate = this.setDate.bind(this);
   }
@@ -100,17 +97,6 @@ export default class AddScreen extends Component {
     } catch (error) {
       console.log(error);
     }
-  };
-  showDateTimePicker = () => {
-    this.setState({isDateTimePickerVisible: true});
-    console.log(this.state.chosenTime);
-  };
-  hideDateTimePicker = () => {
-    this.setState({isDateTimePickerVisible: false});
-  };
-  handleDatePicked = date => {
-    console.log('A date has been picked: ', date);
-    this.hideDateTimePicker();
   };
   render() {
     return (
@@ -177,40 +163,21 @@ export default class AddScreen extends Component {
           </Content>
           <Content>
             <Text>Thời Gian: </Text>
-            <Form style={styles.dateTime}>
-              <Button style={styles.buttonTime}>
-                <DatePicker
-                  defaultDate={new Date()}
-                  minimumDate={new Date(2018, 1, 1)}
-                  maximumDate={new Date(2020, 12, 31)}
-                  locale={'vi'}
-                  timeZoneOffsetInMinutes={undefined}
-                  modalTransparent={false}
-                  animationType={'fade'}
-                  androidMode={'default'}
-                  placeHolderText="Select date"
-                  textStyle={{color: 'green'}}
-                  placeHolderTextStyle={{color: 'red', fontSize: 18}}
-                  onDateChange={this.setDate}
-                  disabled={false}
-                />
-              </Button>
-
-              <Button
-                onPress={this.showDateTimePicker}
-                style={styles.buttonTime}>
-                <Text>Select Time</Text>
-              </Button>
-              <DateTimePicker
-                isVisible={this.state.isDateTimePickerVisible}
-                onConfirm={this.handleDatePicked}
-                onCancel={this.hideDateTimePicker}
-                mode="time"
-                timePickerModeAndroid="clock"
-                locale="vi_VN"
-                date={new Date()}
-              />
-            </Form>
+            <DatePicker
+              defaultDate={new Date()}
+              minimumDate={new Date(2018, 1, 1)}
+              maximumDate={new Date(2020, 12, 31)}
+              locale={'en'}
+              timeZoneOffsetInMinutes={undefined}
+              modalTransparent={false}
+              animationType={'fade'}
+              androidMode={'default'}
+              placeHolderText="Select date"
+              textStyle={{color: 'green'}}
+              placeHolderTextStyle={{color: 'red'}}
+              onDateChange={this.setDate}
+              disabled={false}
+            />
             <Text>Date: {this.state.chosenDate.toString().substr(4, 12)}</Text>
           </Content>
           <Form style={styles.buttonContainer}>
@@ -264,16 +231,9 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 30,
   },
   buttonText: {
     marginLeft: 40,
-  },
-  buttonTime: {
-    width: 150,
-  },
-  dateTime: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
 });

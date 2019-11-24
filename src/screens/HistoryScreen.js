@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Image, Alert, StyleSheet} from 'react-native';
 import {FloatingAction} from 'react-native-floating-action';
 import AsyncStorage from '@react-native-community/async-storage';
+
 import {
   List,
   Button,
@@ -13,6 +14,7 @@ import {
   Left,
   Right,
   Form,
+  Picker,
 } from 'native-base';
 export default class HistoryScreen extends Component {
   static navigationOptions = {
@@ -23,6 +25,7 @@ export default class HistoryScreen extends Component {
     super(props);
     this.state = {
       dataList: [],
+      selected: ' ',
     };
   }
   async componentDidMount() {
@@ -37,6 +40,18 @@ export default class HistoryScreen extends Component {
       console.log(error);
     }
   }
+
+  option = () => {
+    Alert.alert(`Alert`, `Nhấn lựa chọn của bạn`, [
+      {
+        text: 'Edit',
+        onPress: () => {
+          this.props.navigation.navigate('Edit');
+        },
+      },
+      {text: 'Delete', onPress: () => {}},
+    ]);
+  };
   render() {
     return (
       <Container>
@@ -44,9 +59,14 @@ export default class HistoryScreen extends Component {
           dataArray={this.state.dataList}
           keyExtractor={item => item.id}
           renderRow={item => (
-            <ListItem button style={styles.container}>
+            <ListItem
+              button
+              style={styles.container}
+              onLongPress={this.option.bind(this)}>
               <Form>
-                <Text style={styles.date}>{item.chosenDate}</Text>
+                <Form style={styles.settingContainer}>
+                  <Text style={styles.date}>{item.chosenDate}</Text>
+                </Form>
                 <Form style={styles.botcontaine}>
                   <Text note style={styles.danhmuc}>
                     {item.selected}
@@ -94,5 +114,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: 290,
+  },
+  settingContainer: {
+    flexDirection: 'row',
   },
 });
