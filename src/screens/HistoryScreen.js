@@ -57,6 +57,7 @@ export default class HistoryScreen extends Component {
                     text: 'Edit',
                     onPress: () => {
                       this.props.navigation.navigate('Edit', {
+                        id: item.id,
                         money: item.money,
                         selected: item.selected,
                         type: item.type,

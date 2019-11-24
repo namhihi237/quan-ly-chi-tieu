@@ -42,6 +42,7 @@ const danhmucs = {
   danhmuc16: 'Phụ Cấp',
   danhmuc17: 'Tiết Kiệm',
 };
+
 const loais = {
   loai01: 'Tiền Chi',
   loai02: 'Tiền Thu',
@@ -207,8 +208,6 @@ export default class AddScreen extends Component {
                 onCancel={this.hideDateTimePicker}
                 mode="time"
                 timePickerModeAndroid="clock"
-                locale="vi_VN"
-                date={new Date()}
               />
             </Form>
             <Text>Date: {this.state.chosenDate.toString().substr(4, 12)}</Text>
