@@ -40,7 +40,50 @@ export default class HistoryScreen extends Component {
       console.log(error);
     }
   }
-
+  option = (item, id) => {
+    const removeValue = async () => {
+      try {
+        await AsyncStorage.removeItem(id);
+        console.log('Remove item has id : ' + id);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    Alert.alert(`Alert`, `Nhấn lựa chọn của bạn`, [
+      {
+        text: 'Edit',
+        onPress: () => {
+          this.props.navigation.navigate('Edit', {
+            id: item.id,
+            money: item.money,
+            selected: item.selected,
+            type: item.type,
+            chosenDate: item.chosenDate,
+            note: item.note,
+          });
+        },
+      },
+      {
+        text: 'Delete',
+        onPress: () => {
+          const list = this.state.dataList;
+          let key;
+          list.map((item, index) => {
+            let spending = Object.keys(item).find(
+              attribute => item[attribute] === item.id,
+            );
+            if (spending) {
+              key = index;
+            }
+          });
+          list.splice(key - 1, 1);
+          this.setState({dataList: list});
+          removeValue();
+        },
+      },
+      {text: 'Cancel', onPress: () => {}},
+    ]);
+  };
   render() {
     return (
       <Container>
@@ -51,51 +94,7 @@ export default class HistoryScreen extends Component {
             <ListItem
               button
               style={styles.container}
-              onLongPress={() => {
-                const removeValue = async () => {
-                  try {
-                    await AsyncStorage.removeItem(item.id);
-                  } catch (e) {
-                    console.log(e);
-                  }
-
-                  console.log('Remove item has id : ' + id);
-                };
-                Alert.alert(`Alert`, `Nhấn lựa chọn của bạn`, [
-                  {
-                    text: 'Edit',
-                    onPress: () => {
-                      this.props.navigation.navigate('Edit', {
-                        id: item.id,
-                        money: item.money,
-                        selected: item.selected,
-                        type: item.type,
-                        chosenDate: item.chosenDate,
-                        note: item.note,
-                      });
-                    },
-                  },
-                  {
-                    text: 'Delete',
-                    onPress: () => {
-                      const list = this.state.dataList;
-                      let key;
-                      list.map((item, index) => {
-                        let spending = Object.keys(item).find(
-                          attribute => item[attribute] === item.id,
-                        );
-                        if (spending) {
-                          key = index;
-                          list.splice(key, 1);
-                        }
-                      });
-                      this.setState({dataList: list});
-                      removeValue();
-                    },
-                  },
-                  {text: 'Cancel', onPress: () => {}},
-                ]);
-              }}>
+              onLongPress={() => this.option(item, item.id)}>
               <Form>
                 <Form style={styles.settingContainer}>
                   <Text style={styles.date}>{item.chosenDate}</Text>
