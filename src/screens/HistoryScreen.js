@@ -27,6 +27,7 @@ export default class HistoryScreen extends Component {
       dataList: [],
       selected: ' ',
     };
+    this.option = this.option.bind(this);
   }
   async componentDidMount() {
     try {
@@ -41,7 +42,16 @@ export default class HistoryScreen extends Component {
     }
   }
 
-  option = () => {
+  option = (id) => {
+    const removeValue = async () => {
+      try {
+        await AsyncStorage.removeItem(id);
+      } catch(e) {
+        console.log(e);
+      }
+    
+      console.log('Remove item has id : ' + id);
+    }
     Alert.alert(`Alert`, `Nhấn lựa chọn của bạn`, [
       {
         text: 'Edit',
@@ -49,7 +59,20 @@ export default class HistoryScreen extends Component {
           this.props.navigation.navigate('Edit');
         },
       },
-      {text: 'Delete', onPress: () => {}},
+      {
+        text: 'Delete', onPress: () => {
+          const list = this.state.dataList;
+          let key;
+          list.map( (item,index) => {
+            let spending = Object.keys(item).find( (attribute) => item[attribute]===id);
+            if(spending) {
+              key = index;
+              list.splice(key,1);
+          }
+          });
+          this.setState({dataList:list});
+          removeValue();
+      }},
     ]);
   };
   render() {
@@ -62,7 +85,7 @@ export default class HistoryScreen extends Component {
             <ListItem
               button
               style={styles.container}
-              onLongPress={this.option.bind(this)}>
+              onLongPress={() => this.option(item.id)}>
               <Form>
                 <Form style={styles.settingContainer}>
                   <Text style={styles.date}>{item.chosenDate}</Text>
