@@ -22,7 +22,7 @@ const HistoryStack = createStackNavigator(
   {
     defaultNavigationOptions: {
       title: 'Quản Lý Chi Tiêu',
-      headerTintColor: '#00BFFF',
+      headerTintColor: '#FFF',
       headerStyle: {
         backgroundColor: '#008B8B',
       },
