@@ -42,7 +42,7 @@ export default class HistoryScreen extends Component {
     }
   }
 
-  option = (id) => {
+  option = (item, id) => {
     const removeValue = async () => {
       try {
         await AsyncStorage.removeItem(id);
@@ -56,7 +56,13 @@ export default class HistoryScreen extends Component {
       {
         text: 'Edit',
         onPress: () => {
-          this.props.navigation.navigate('Edit');
+          this.props.navigation.navigate('Edit', {
+            money: item.money,
+            selected: item.selected,
+            type: item.type,
+            chosenDate: item.chosenDate,
+            note: item.note,
+          });
         },
       },
       {
@@ -72,7 +78,10 @@ export default class HistoryScreen extends Component {
           });
           this.setState({dataList:list});
           removeValue();
-      }},
+        }
+      },
+      {text: 'Cancel', onPress: () => {}
+      },
     ]);
   };
   render() {
@@ -85,7 +94,7 @@ export default class HistoryScreen extends Component {
             <ListItem
               button
               style={styles.container}
-              onLongPress={() => this.option(item.id)}>
+              onLongPress={() => this.option(item, item.id)}>
               <Form>
                 <Form style={styles.settingContainer}>
                   <Text style={styles.date}>{item.chosenDate}</Text>
@@ -95,8 +104,10 @@ export default class HistoryScreen extends Component {
                     {item.selected}
                   </Text>
                   <Text note style={styles.money}>
-                    {item.money!=0? item.money : 0}
-                    <Text note style={styles.money}>vnđ</Text>
+                    {item.money != 0 ? item.money : 0}
+                    <Text note style={styles.money}>
+                      vnđ
+                    </Text>
                   </Text>
                 </Form>
                 <Text note>
