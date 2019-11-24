@@ -52,6 +52,15 @@ export default class HistoryScreen extends Component {
               button
               style={styles.container}
               onLongPress={() => {
+                const removeValue = async () => {
+                  try {
+                    await AsyncStorage.removeItem(item.id);
+                  } catch (e) {
+                    console.log(e);
+                  }
+
+                  console.log('Remove item has id : ' + id);
+                };
                 Alert.alert(`Alert`, `Nhấn lựa chọn của bạn`, [
                   {
                     text: 'Edit',
@@ -66,7 +75,24 @@ export default class HistoryScreen extends Component {
                       });
                     },
                   },
-                  {text: 'Delete', onPress: () => {}},
+                  {
+                    text: 'Delete',
+                    onPress: () => {
+                      const list = this.state.dataList;
+                      let key;
+                      list.map((item, index) => {
+                        let spending = Object.keys(item).find(
+                          attribute => item[attribute] === item.id,
+                        );
+                        if (spending) {
+                          key = index;
+                          list.splice(key, 1);
+                        }
+                      });
+                      this.setState({dataList: list});
+                      removeValue();
+                    },
+                  },
                   {text: 'Cancel', onPress: () => {}},
                 ]);
               }}>
