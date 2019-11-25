@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Image, Alert, StyleSheet} from 'react-native';
 import {FloatingAction} from 'react-native-floating-action';
 import AsyncStorage from '@react-native-community/async-storage';
+import {NavigationEvents} from 'react-navigation';
 
 import {
   List,
@@ -25,21 +26,29 @@ export default class HistoryScreen extends Component {
     super(props);
     this.state = {
       dataList: [],
-      selected: ' ',
+      isLoading: true,
     };
   }
-  async componentDidMount() {
+  fetchData = async () => {
     try {
       let keys = await AsyncStorage.getAllKeys();
+      let data = [];
       keys.forEach(async key => {
         let item = await JSON.parse(await AsyncStorage.getItem(key));
-        let data = this.state.dataList.concat(item);
-        this.setState({dataList: data});
+        data.push(item);
       });
+      this.setState({dataList: data});
     } catch (error) {
       console.log(error);
     }
+  };
+  async componentDidMount() {
+    this.fetchData();
+    this.onLoad();
   }
+  onLoad = () => {
+    this.props.navigation.addListener('willFocus', () => this.fetchData());
+  };
   option = (item, id) => {
     const removeValue = async () => {
       try {
@@ -94,6 +103,7 @@ export default class HistoryScreen extends Component {
             <ListItem
               button
               style={styles.container}
+              delayLongPress={300}
               onLongPress={() => this.option(item, item.id)}>
               <Form>
                 <Form style={styles.settingContainer}>
