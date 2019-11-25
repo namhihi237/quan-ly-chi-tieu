@@ -121,7 +121,7 @@ export default class UpdateScreen extends Component {
     let key = newItem.id;
     try {
       await AsyncStorage.setItem(key, JSON.stringify(newItem));
-      this.props.navigation.push('History');
+      this.props.navigation.navigate('History');
     } catch (error) {
       console.log(error);
     }
