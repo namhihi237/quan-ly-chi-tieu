@@ -26,7 +26,7 @@ export default class HistoryScreen extends Component {
     super(props);
     this.state = {
       dataList: [],
-      isLoading: true,
+      isLoading: false,
     };
     this.option = this.option.bind(this);
   }
@@ -59,7 +59,7 @@ export default class HistoryScreen extends Component {
         console.log(e);
       }
     };
-    Alert.alert(`Alert`, `Nhấn lựa chọn của bạn`, [
+    Alert.alert(`Danh mục`, `Nhấn lựa chọn của bạn`, [
       {
         text: 'Edit',
         onPress: () => {
@@ -86,7 +86,7 @@ export default class HistoryScreen extends Component {
               key = index;
             }
           });
-          list.splice(key - 1, 1);
+          list.splice(key, 1);
           this.setState({dataList: list});
           removeValue();
         },
@@ -95,6 +95,9 @@ export default class HistoryScreen extends Component {
     ]);
   };
   render() {
+    const formatMoney = (text) => {
+      return text.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+    };
     return (
       <Container>
         <List
@@ -115,14 +118,14 @@ export default class HistoryScreen extends Component {
                     {item.selected}
                   </Text>
                   <Text note style={styles.money}>
-                    {item.money != 0 ? item.money : 0}
+                    {item.money ? formatMoney(item.money) : 0}
                     <Text note style={styles.money}>
                       vnđ
                     </Text>
                   </Text>
                 </Form>
                 <Text note>
-                  {item.note === '' ? item.note : `Ghi chú :${item.note}`}
+                  {item.note ? `Ghi chú :${item.note}` : null }
                 </Text>
               </Form>
             </ListItem>
