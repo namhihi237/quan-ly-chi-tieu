@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Image, Alert, StyleSheet} from 'react-native';
 import {FloatingAction} from 'react-native-floating-action';
 import AsyncStorage from '@react-native-community/async-storage';
+import {NavigationEvents} from 'react-navigation';
 
 import {
   List,
@@ -25,38 +26,45 @@ export default class HistoryScreen extends Component {
     super(props);
     this.state = {
       dataList: [],
-      selected: ' ',
+      isLoading: true,
     };
     this.option = this.option.bind(this);
   }
-  async componentDidMount() {
+  fetchData = async () => {
     try {
       let keys = await AsyncStorage.getAllKeys();
+      let data = [];
       keys.forEach(async key => {
         let item = await JSON.parse(await AsyncStorage.getItem(key));
-        let data = this.state.dataList.concat(item);
-        this.setState({dataList: data});
+        data.push(item);
       });
+      this.setState({dataList: data});
     } catch (error) {
       console.log(error);
     }
+  };
+  async componentDidMount() {
+    this.fetchData();
+    this.onLoad();
   }
-
+  onLoad = () => {
+    this.props.navigation.addListener('willFocus', () => this.fetchData());
+  };
   option = (item, id) => {
     const removeValue = async () => {
       try {
         await AsyncStorage.removeItem(id);
-      } catch(e) {
+        console.log('Remove item has id : ' + id);
+      } catch (e) {
         console.log(e);
       }
-    
-      console.log('Remove item has id : ' + id);
-    }
+    };
     Alert.alert(`Alert`, `Nhấn lựa chọn của bạn`, [
       {
         text: 'Edit',
         onPress: () => {
           this.props.navigation.navigate('Edit', {
+            id: item.id,
             money: item.money,
             selected: item.selected,
             type: item.type,
@@ -66,22 +74,24 @@ export default class HistoryScreen extends Component {
         },
       },
       {
-        text: 'Delete', onPress: () => {
+        text: 'Delete',
+        onPress: () => {
           const list = this.state.dataList;
           let key;
-          list.map( (item,index) => {
-            let spending = Object.keys(item).find( (attribute) => item[attribute]===id);
-            if(spending) {
+          list.map((item, index) => {
+            let spending = Object.keys(item).find(
+              attribute => item[attribute] === item.id,
+            );
+            if (spending) {
               key = index;
-              list.splice(key,1);
-          }
+            }
           });
-          this.setState({dataList:list});
+          list.splice(key - 1, 1);
+          this.setState({dataList: list});
           removeValue();
-        }
+        },
       },
-      {text: 'Cancel', onPress: () => {}
-      },
+      {text: 'Cancel', onPress: () => {}},
     ]);
   };
   render() {
@@ -94,6 +104,7 @@ export default class HistoryScreen extends Component {
             <ListItem
               button
               style={styles.container}
+              delayLongPress={300}
               onLongPress={() => this.option(item, item.id)}>
               <Form>
                 <Form style={styles.settingContainer}>
