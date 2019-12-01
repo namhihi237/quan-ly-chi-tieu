@@ -2,21 +2,7 @@ import React, {Component} from 'react';
 import {Image, Alert, StyleSheet} from 'react-native';
 import {FloatingAction} from 'react-native-floating-action';
 import AsyncStorage from '@react-native-community/async-storage';
-import {NavigationEvents} from 'react-navigation';
-
-import {
-  List,
-  Button,
-  Container,
-  Content,
-  Text,
-  ListItem,
-  Body,
-  Left,
-  Right,
-  Form,
-  Picker,
-} from 'native-base';
+import {List, Container, Text, ListItem, Form} from 'native-base';
 export default class HistoryScreen extends Component {
   static navigationOptions = {
     swipeEnabled: true,
@@ -26,7 +12,6 @@ export default class HistoryScreen extends Component {
     super(props);
     this.state = {
       dataList: [],
-      isLoading: false,
     };
     this.option = this.option.bind(this);
   }
@@ -38,7 +23,9 @@ export default class HistoryScreen extends Component {
         let item = await JSON.parse(await AsyncStorage.getItem(key));
         data.push(item);
       });
-      this.setState({dataList: data});
+      setTimeout(() => {
+        this.setState({dataList: data});
+      }, 150);
     } catch (error) {
       console.log(error);
     }
@@ -95,7 +82,7 @@ export default class HistoryScreen extends Component {
     ]);
   };
   render() {
-    const formatMoney = (text) => {
+    const formatMoney = text => {
       return text.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
     };
     return (
@@ -124,9 +111,7 @@ export default class HistoryScreen extends Component {
                     </Text>
                   </Text>
                 </Form>
-                <Text note>
-                  {item.note ? `Ghi chú :${item.note}` : null }
-                </Text>
+                <Text note>{item.note ? `Ghi chú :${item.note}` : null}</Text>
               </Form>
             </ListItem>
           )}></List>
