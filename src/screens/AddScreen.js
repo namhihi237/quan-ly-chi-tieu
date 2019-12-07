@@ -49,6 +49,12 @@ const loais = {
   loai03: 'Cho Vay',
   loai04: 'Nợ',
 };
+var tong = {
+  thu: 0,
+  chi: 0,
+  no: 0,
+  vay: 0,
+};
 export default class AddScreen extends Component {
   static navigationOptions = {
     title: 'Thêm Chi Tiêu',
@@ -86,17 +92,62 @@ export default class AddScreen extends Component {
     this.setState({note: text});
   };
   handleButtonSave = async () => {
+    const keyTong = 'tong';
+
     const {money, selected, type, note, chosenDate} = this.state;
     var newItem = item;
     newItem.id = Date.now().toString();
     newItem.money = money;
     newItem.selected = danhmucs[selected];
     newItem.type = loais[type];
+
     newItem.note = note;
     newItem.chosenDate = chosenDate.toString().substr(4, 12);
     let key = newItem.id;
     try {
       await AsyncStorage.setItem(key, JSON.stringify(newItem));
+      let keys = await AsyncStorage.getAllKeys();
+      console.log(keys);
+      if (keys.includes(keyTong) === true) {
+        let sum = await JSON.parse(await AsyncStorage.getItem(keyTong));
+        console.log(sum);
+        if (newItem.type === loais.loai01)
+          sum.chi = sum.chi + parseFloat(newItem.money);
+        if (newItem.type === loais.loai02)
+          sum.thu = sum.thu + parseFloat(newItem.money);
+        if (newItem.type === loais.loai03)
+          sum.vay = sum.vay + parseFloat(newItem.money);
+        if (newItem.type === loais.loai04)
+          sum.no = sum.no + parseFloat(newItem.money);
+
+        // switch (newItem.type) {
+        //   case loais.loai01:
+        //     sum.chi = sum.chi + newItem.money;
+        //     break;
+        //   case loais.loai02:
+        //     sum.thu = sum.thu + newItem.money;
+        //     break;
+        //   case loais.loai03:
+        //     sum.vay = sum.vay + newItem.money;
+        //     break;
+        //   case loais.loai04:
+        //     sum.no = sum.no + newItem.money;
+        //     break;
+        //   default:
+        //     break;
+        // }
+      } else {
+        if (newItem.type === loais.loai01)
+          tong.chi = tong.chi + parseFloat(newItem.money);
+        if (newItem.type === loais.loai02)
+          tong.thu = tong.thu + parseFloat(newItem.money);
+        if (newItem.type === loais.loai03)
+          tong.vay = tong.vay + parseFloat(newItem.money);
+        if (newItem.type === loais.loai04)
+          tong.no = tong.no + parseFloat(newItem.money);
+        await AsyncStorage.setItem(keyTong, JSON.stringify(tong));
+      }
+
       this.props.navigation.navigate('History');
     } catch (error) {
       console.log(error);

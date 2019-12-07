@@ -12,6 +12,7 @@ export default class HistoryScreen extends Component {
     super(props);
     this.state = {
       dataList: [],
+      tong: {},
     };
     this.option = this.option.bind(this);
   }
@@ -21,6 +22,7 @@ export default class HistoryScreen extends Component {
       let data = [];
       keys.forEach(async key => {
         let item = await JSON.parse(await AsyncStorage.getItem(key));
+        // console.log(item);
         data.push(item);
       });
       setTimeout(() => {
