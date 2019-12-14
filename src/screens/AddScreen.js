@@ -93,7 +93,6 @@ export default class AddScreen extends Component {
   };
   handleButtonSave = async () => {
     const keyTong = 'tong';
-
     const {money, selected, type, note, chosenDate} = this.state;
     var newItem = item;
     newItem.id = Date.now().toString();
@@ -107,10 +106,8 @@ export default class AddScreen extends Component {
     try {
       await AsyncStorage.setItem(key, JSON.stringify(newItem));
       let keys = await AsyncStorage.getAllKeys();
-      console.log(keys);
-      if (keys.includes(keyTong) === true) {
+      if (keys.includes(keyTong)) {
         let sum = await JSON.parse(await AsyncStorage.getItem(keyTong));
-        console.log(sum);
         if (newItem.type === loais.loai01)
           sum.chi = sum.chi + parseFloat(newItem.money);
         if (newItem.type === loais.loai02)
@@ -119,23 +116,7 @@ export default class AddScreen extends Component {
           sum.vay = sum.vay + parseFloat(newItem.money);
         if (newItem.type === loais.loai04)
           sum.no = sum.no + parseFloat(newItem.money);
-
-        // switch (newItem.type) {
-        //   case loais.loai01:
-        //     sum.chi = sum.chi + newItem.money;
-        //     break;
-        //   case loais.loai02:
-        //     sum.thu = sum.thu + newItem.money;
-        //     break;
-        //   case loais.loai03:
-        //     sum.vay = sum.vay + newItem.money;
-        //     break;
-        //   case loais.loai04:
-        //     sum.no = sum.no + newItem.money;
-        //     break;
-        //   default:
-        //     break;
-        // }
+        await AsyncStorage.setItem(keyTong, JSON.stringify(sum));
       } else {
         if (newItem.type === loais.loai01)
           tong.chi = tong.chi + parseFloat(newItem.money);
@@ -155,13 +136,11 @@ export default class AddScreen extends Component {
   };
   showDateTimePicker = () => {
     this.setState({isDateTimePickerVisible: true});
-    console.log(this.state.chosenTime);
   };
   hideDateTimePicker = () => {
     this.setState({isDateTimePickerVisible: false});
   };
   handleDatePicked = date => {
-    console.log('A date has been picked: ', date);
     this.hideDateTimePicker();
   };
   render() {
@@ -288,6 +267,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#A9A9A9',
     marginBottom: 20,
   },
+
   InputDanhMuc: {
     backgroundColor: '#A9A9A9',
     padding: 10,

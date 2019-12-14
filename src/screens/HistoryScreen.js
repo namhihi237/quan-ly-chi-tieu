@@ -21,9 +21,10 @@ export default class HistoryScreen extends Component {
       let keys = await AsyncStorage.getAllKeys();
       let data = [];
       keys.forEach(async key => {
-        let item = await JSON.parse(await AsyncStorage.getItem(key));
-        // console.log(item);
-        data.push(item);
+        if (key !== 'tong') {
+          let item = await JSON.parse(await AsyncStorage.getItem(key));
+          data.push(item);
+        }
       });
       setTimeout(() => {
         this.setState({dataList: data});
