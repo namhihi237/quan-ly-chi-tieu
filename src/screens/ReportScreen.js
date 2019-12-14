@@ -1,110 +1,187 @@
 import React, {Component} from 'react';
-import {Button, Text, View, Image} from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
-import { 
+import {
   Container,
   Content,
+  Form,
   List,
   ListItem,
-  Body,
-  Left,
-  Right,
-  Form,
-  Picker,
+  Text,
+  Header,
 } from 'native-base';
+import {Alert, StyleSheet, Dimensions} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import {LineChart, BarChart, ProgressChart} from 'react-native-chart-kit';
+
+const chartConfig = {
+  backgroundGradientFrom: 'red',
+  backgroundGradientFromOpacity: 0,
+  backgroundGradientTo: 'red',
+  backgroundGradientToOpacity: 0.5,
+  color: (opacity = 0.6) => `rgba(26, 100, 36, ${opacity})`,
+  strokeWidth: 2, // optional, default 3
+  barPercentage: 0.5,
+};
 export default class ReportScreen extends Component {
-  static navigationOptions = {
-    swipeEnabled: true,
-    title: 'Báo cáo',
-  };
   constructor(props) {
     super(props);
     this.state = {
       dataList: [],
-      isLoading: false,
+      thu: 0,
+      chi: 0,
+      no: 0,
+      vay: 0,
+      dataLine: [],
+      dataPro: [],
+      labelLine: [],
+      lablePro: [],
     };
   }
-  fetchData = async () => {
-    try {
-      let keys = await AsyncStorage.getAllKeys();
-      let data = [];
-      keys.forEach(async key => {
-        let item = await JSON.parse(await AsyncStorage.getItem(key));
-        data.push(item);
-      });
-      this.setState({dataList: data});
-    } catch (error) {
-      console.log(error);
-    }
-  };
   async componentDidMount() {
     this.fetchData();
-    this.onCalculateData();
     this.onLoad();
   }
   onLoad = () => {
     this.props.navigation.addListener('willFocus', () => this.fetchData());
   };
-  onCalculateData = () => {
-    const { dataList:cal } = this.state;
-    console.log(cal);
-  }
-  // static navigationOptions = {
-  //   swipeEnabled: true,
-  //   tabBarIcon: ({tintColor}) => {
-  //     return (
-  //       <Image
-  //         source={require('../image/report.png')}
-  //         style={{tintColor: tintColor, width: 26, height: 26}}></Image>
-  //     );
-  //   },
-  // };
-  toDayReport = () => {
+  fetchData = async () => {
+    try {
+      let keys = await AsyncStorage.getAllKeys();
+      let sum = await JSON.parse(await AsyncStorage.getItem('tong'));
+      let data = [];
+      let chi = parseFloat(sum.chi);
+      let thu = parseFloat(sum.thu);
+      let no = parseFloat(sum.no);
+      let vay = parseFloat(sum.vay);
+      this.setState({thu, chi, no, vay});
+      let dataLine1 = [];
+      let labelLine1 = [];
+      let dataLine = [];
+      let labelLine = [];
+      keys.forEach(async key => {
+        if (key !== 'tong') {
+          let item = await JSON.parse(await AsyncStorage.getItem(key));
+          data.push(item);
+          dataLine1.push(item.money);
+          labelLine1.push(item.chosenDate);
+        }
+        dataLine = dataLine1.slice(dataLine1.length - 3);
+        labelLine = labelLine1.slice(labelLine1.length - 3);
+      });
 
-  }
-  yesterdayReport = () => {
-    
-  }
+      setTimeout(() => {
+        let {chi, thu, no, vay} = this.state;
+        let tong = chi + vay + thu + no;
+        let dataPro = [chi / tong, thu / tong, no / tong, vay / tong];
+        let obj = {};
+        let newDataLine = [];
+        for (let i = 0; i < labelLine.length; i++) {
+          Object.assign(obj, {[labelLine[i]]: 0});
+        }
+        const newLabelLine = Object.keys(obj);
+        for (let i = 0; i < newLabelLine.length; i++) {
+          let money = 0;
+          for (let j = 0; j < dataLine.length; j++) {
+            if (labelLine[j] === newLabelLine[i]) {
+              money = money + parseFloat(dataLine[j]);
+            }
+          }
+          newDataLine.push(money);
+        }
+        this.setState({
+          dataList: data,
+          dataLine: newDataLine,
+          labelLine: newLabelLine,
+          dataPro,
+        });
+      }, 150);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   render() {
     return (
       <Container>
-        <Content><Text>Tổng thu:{`500.000vnđ`}</Text>
-        <Text>Tổng chi:{`400.000vnđ`}</Text>
-        <Text>Số dư:{`300.000vnđ`}</Text>
-        <Text>Số nợ còn lại:{`200.000vnđ`}</Text>
-        <Text>Số Tiền cho vay:{`100.000vnđ`}</Text>
-        </Content>
-        {/* <List
-          dataArray={this.state.dataList}
-          keyExtractor={item => item.id}
-          renderRow={item => (
-            <ListItem
-              button
-              style={styles.container}
-              delayLongPress={300}
-              onLongPress={() => this.option(item, item.id)}>
-              <Form>
-                <Form style={styles.settingContainer}>
-                  <Text style={styles.date}>{item.chosenDate}</Text>
-                </Form>
-                <Form style={styles.botcontaine}>
-                  <Text note style={styles.danhmuc}>
-                    {item.selected}
-                  </Text>
-                  <Text note style={styles.money}>
-                    {item.money ? formatMoney(item.money) : 0}
-                    <Text note style={styles.money}>
-                      vnđ
-                    </Text>
-                  </Text>
-                </Form>
-                <Text note>
-                  {item.note ? `Ghi chú :${item.note}` : null }
-                </Text>
-              </Form>
-            </ListItem>
-          )}></List> */}
+        <Header style={styles.header}>
+          <Text style={styles.textHeader}>Báo Cáo Chi Tiêu</Text>
+        </Header>
+        <List>
+          <ListItem>
+            <Form>
+              <Text style={styles.textLabel}>
+                Tổng thu: {this.state.thu} VNĐ{' '}
+              </Text>
+              <Text style={styles.textLabel}>
+                Tổng chi: {this.state.chi} VNĐ
+              </Text>
+              <Text style={styles.textLabel}>Tổng nợ: {this.state.no} VNĐ</Text>
+              <Text style={styles.textLabel}>
+                Cho vay: {this.state.vay} VNĐ
+              </Text>
+              <Text style={styles.textSodu}>
+                => Số dư :
+                {parseFloat(this.state.thu - parseFloat(this.state.chi))} VNĐ
+              </Text>
+            </Form>
+          </ListItem>
+          <ListItem>
+            <BarChart
+              data={{
+                labels: this.state.labelLine, // this.state.lableBar
+                datasets: [
+                  {
+                    data: this.state.dataLine, // this.state.dataBar
+                  },
+                ],
+              }}
+              width={(Dimensions.get('window').width * 10) / 11}
+              height={180}
+              yAxisLabel={'$'}
+              chartConfig={chartConfig}
+              verticalLabelRotation={0}
+            />
+          </ListItem>
+          <ListItem>
+            <ProgressChart
+              data={{
+                labels: ['Chi', 'Thu', 'No', 'Vay'], // optional
+                data: this.state.dataPro,
+              }}
+              width={(Dimensions.get('window').width * 10) / 11}
+              height={200}
+              chartConfig={{
+                backgroundGradientFrom: 'red',
+                backgroundGradientFromOpacity: 0,
+                backgroundGradientTo: 'red',
+                backgroundGradientToOpacity: 0.5,
+                color: (opacity = 0.5) => `rgba(76, 200, 85, ${opacity})`,
+                strokeWidth: 2, // optional, default 3
+                barPercentage: 0.5,
+              }}
+            />
+          </ListItem>
+        </List>
       </Container>
     );
   }
 }
+const styles = StyleSheet.create({
+  textLabel: {
+    fontSize: 15,
+  },
+  textSodu: {
+    fontSize: 15,
+    color: 'red',
+  },
+  textHeader: {
+    fontSize: 25,
+    color: '#00008B',
+    marginTop: 10,
+  },
+  header: {
+    backgroundColor: '#5F9EA0',
+  },
+  chart: {
+    flex: 1,
+  },
+});
