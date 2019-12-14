@@ -46,39 +46,30 @@ export default class ReportScreen extends Component {
   fetchData = async () => {
     try {
       let keys = await AsyncStorage.getAllKeys();
+      let sum = await JSON.parse(await AsyncStorage.getItem('tong'));
       let data = [];
-      let chi = 0;
-      let thu = 0;
-      let no = 0;
-      let vay = 0;
+      let chi = parseFloat(sum.chi);
+      let thu = parseFloat(sum.thu);
+      let no = parseFloat(sum.no);
+      let vay = parseFloat(sum.vay);
+      this.setState({thu, chi, no, vay});
+      let dataLine1 = [];
+      let labelLine1 = [];
       let dataLine = [];
       let labelLine = [];
       keys.forEach(async key => {
-        let item = await JSON.parse(await AsyncStorage.getItem(key));
-        data.push(item);
-        if (keys.length <= 7) {
-          dataLine.push(item.money);
-          labelLine.push(item.chosenDate);
+        if (key !== 'tong') {
+          let item = await JSON.parse(await AsyncStorage.getItem(key));
+          data.push(item);
+          dataLine1.push(item.money);
+          labelLine1.push(item.chosenDate);
         }
-        if (item.type === 'Tiền Chi') {
-          chi = chi + parseFloat(item.money);
-          this.setState({chi});
-        }
-        if (item.type === 'Tiền Thu') {
-          thu = thu + parseFloat(item.money);
-          this.setState({thu});
-        }
-        if (item.type === 'Nợ') {
-          no = no + parseFloat(item.money);
-          this.setState({no});
-        }
-        if (item.type === 'Cho Vay') {
-          vay = vay + parseFloat(item.money);
-          this.setState({vay});
-        }
+        dataLine = dataLine1.slice(dataLine1.length - 3);
+        labelLine = labelLine1.slice(labelLine1.length - 3);
       });
 
       setTimeout(() => {
+        let {chi, thu, no, vay} = this.state;
         let tong = chi + vay + thu + no;
         let dataPro = [chi / tong, thu / tong, no / tong, vay / tong];
         let obj = {};
