@@ -83,6 +83,8 @@ export default class ReportScreen extends Component {
           for (let j = 0; j < dataLine.length; j++) {
             if (labelLine[j] === newLabelLine[i]) {
               money = money + parseFloat(dataLine[j]);
+              Math.round(money)
+              money/=1000;
             }
           }
           newDataLine.push(money);
@@ -101,9 +103,52 @@ export default class ReportScreen extends Component {
   render() {
     const {thu, chi, no, vay} = this.state ;
     const soDu = thu - chi;
+    const tong = thu + chi + no + vay;
     const formatMoney = (money = 0) =>{
-      return money.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+      if(Number(money)) return money.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+      return 0;
     }
+    const chart = this.state.dataLine.length !==0?  <List>
+    <ListItem>
+    <BarChart
+      data={{
+        labels: this.state.labelLine, // this.state.lableBar
+        datasets: [
+          {
+            data: this.state.dataLine, // this.state.dataBar
+          },
+        ],
+      }}
+      width={(Dimensions.get('window').width * 10) / 11}
+      height={180}
+      yAxisSuffix	={'K'}
+      withVerticalLabels = {true}
+      withHorizontalLabels	= {true}
+      chartConfig={chartConfig}
+      verticalLabelRotation={0}
+    />
+  </ListItem>
+  <ListItem>
+    <ProgressChart
+      data={{
+        labels: ['Chi', 'Thu', 'Nợ', 'Vay'], // optional
+        data: this.state.dataPro,
+      }}
+      width={(Dimensions.get('window').width * 10) / 11}
+      height={200}
+      chartConfig={{
+        backgroundGradientFrom: 'red',
+        backgroundGradientFromOpacity: 0,
+        backgroundGradientTo: 'red',
+        backgroundGradientToOpacity: 0.5,
+        color: (opacity = 0.5) => `rgba(76, 200, 85, ${opacity})`,
+        strokeWidth: 2, // optional, default 3
+        barPercentage: 0.5,
+      }}
+    />
+  </ListItem>
+  </List> : null;
+
     return (
       <Container>
         <ScrollView>
@@ -129,42 +174,7 @@ export default class ReportScreen extends Component {
                 </Text>
               </Form>
             </ListItem>
-            <ListItem>
-              <BarChart
-                data={{
-                  labels: this.state.labelLine, // this.state.lableBar
-                  datasets: [
-                    {
-                      data: this.state.dataLine, // this.state.dataBar
-                    },
-                  ],
-                }}
-                width={(Dimensions.get('window').width * 10) / 11}
-                height={180}
-                yAxisLabel={'$'}
-                chartConfig={chartConfig}
-                verticalLabelRotation={0}
-              />
-            </ListItem>
-            <ListItem>
-              <ProgressChart
-                data={{
-                  labels: ['Chi', 'Thu', 'No', 'Vay'], // optional
-                  data: this.state.dataPro,
-                }}
-                width={(Dimensions.get('window').width * 10) / 11}
-                height={200}
-                chartConfig={{
-                  backgroundGradientFrom: 'red',
-                  backgroundGradientFromOpacity: 0,
-                  backgroundGradientTo: 'red',
-                  backgroundGradientToOpacity: 0.5,
-                  color: (opacity = 0.5) => `rgba(76, 200, 85, ${opacity})`,
-                  strokeWidth: 2, // optional, default 3
-                  barPercentage: 0.5,
-                }}
-              />
-            </ListItem>
+            {chart}
           </List>
         </ScrollView>
       </Container>
@@ -181,7 +191,7 @@ const styles = StyleSheet.create({
   },
   textHeader: {
     fontSize: 30,
-    color: '#00008B',
+    color: '#fff',
     marginTop: 10,
     fontFamily: 'vincHand',
   },

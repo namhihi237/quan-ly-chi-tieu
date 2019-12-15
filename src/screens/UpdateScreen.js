@@ -110,6 +110,7 @@ export default class UpdateScreen extends Component {
     this.setState({note: text});
   };
   handleButtonSave = async () => {
+    const keyTong='tong';
     const {money, selected, type, note, chosenDate} = this.state;
     var newItem = item;
     newItem.id = this.props.navigation.getParam('id');
@@ -119,6 +120,24 @@ export default class UpdateScreen extends Component {
     newItem.note = note;
     newItem.chosenDate = chosenDate.toString().substr(4, 12);
     let key = newItem.id;
+    try {
+      let sum = await JSON.parse(await AsyncStorage.getItem(keyTong));
+      if(sum){
+      if (item.type === loais.loai01)
+        sum.chi = sum.chi - parseInt(money);
+      if (item.type === loais.loai02)
+        sum.thu = sum.thu - parseInt(money);
+      if (item.type === loais.loai03)
+        sum.vay = sum.vay - parseInt(money);
+      if (item.type === loais.loai04)
+        sum.no = sum.no - parseInt(money);
+      await AsyncStorage.setItem(keyTong, JSON.stringify(sum));
+      }
+      console.log(sum);
+    } catch (e) {
+      console.log(e);
+    }
+      //
     try {
       await AsyncStorage.setItem(key, JSON.stringify(newItem));
       this.props.navigation.navigate('History');
