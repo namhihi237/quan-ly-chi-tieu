@@ -1,7 +1,7 @@
 /**
  * @format
  */
-import {AppRegistry} from 'react-native';
+import {AppRegistry, Dimensions} from 'react-native';
 import {name as appName} from './app.json';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 import {createStackNavigator} from 'react-navigation-stack';
@@ -12,6 +12,7 @@ import AddScreen from './src/screens/AddScreen';
 import UpdateScreen from './src/screens/UpdateScreen';
 import React from 'react';
 import {Image} from 'react-native';
+const width = Dimensions.get('window').width;
 const HistoryStack = createStackNavigator(
   {
     History: {screen: HistoryScreen},
@@ -24,6 +25,11 @@ const HistoryStack = createStackNavigator(
       headerTintColor: '#FFF',
       headerStyle: {
         backgroundColor: '#008B8B',
+      },
+      headerTitleStyle: {
+        fontFamily: 'vincHand',
+        fontSize: 25,
+        marginLeft: width / 3.6,
       },
     },
   },
