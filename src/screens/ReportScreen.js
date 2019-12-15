@@ -48,10 +48,10 @@ export default class ReportScreen extends Component {
       let keys = await AsyncStorage.getAllKeys();
       let sum = await JSON.parse(await AsyncStorage.getItem('tong'));
       let data = [];
-      let chi = parseFloat(sum.chi);
-      let thu = parseFloat(sum.thu);
-      let no = parseFloat(sum.no);
-      let vay = parseFloat(sum.vay);
+      let chi = sum.chi ? parseFloat(sum.chi) : 0;
+      let thu =  sum.thu ? parseFloat(sum.thu) : 0;
+      let no =  sum.no ? parseFloat(sum.no) : 0;
+      let vay =  sum.vay ? parseFloat(sum.vay) : 0;
       this.setState({thu, chi, no, vay});
       let dataLine1 = [];
       let labelLine1 = [];
@@ -100,6 +100,14 @@ export default class ReportScreen extends Component {
   };
 
   render() {
+    const formatMoney = text => {
+      return text.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+    };
+    const {thu, chi, no, vay} = this.state ;
+    const soDo = parseFloat(thu) - parseFloat(chi);
+    const validate = (money) =>{
+      return money? formatMoney(parseFloat(money)) : null; 
+    }
     return (
       <Container>
         <Header style={styles.header}>
@@ -109,18 +117,18 @@ export default class ReportScreen extends Component {
           <ListItem>
             <Form>
               <Text style={styles.textLabel}>
-                Tổng thu: {this.state.thu} VNĐ{' '}
+                Tổng thu: {validate(thu)} VNĐ{` `}
               </Text>
               <Text style={styles.textLabel}>
-                Tổng chi: {this.state.chi} VNĐ
+                Tổng chi: {validate(chi)} VNĐ
               </Text>
-              <Text style={styles.textLabel}>Tổng nợ: {this.state.no} VNĐ</Text>
+              <Text style={styles.textLabel}>Tổng nợ: {validate(no)} VNĐ</Text>
               <Text style={styles.textLabel}>
-                Cho vay: {this.state.vay} VNĐ
+                Cho vay: {validate(vay)} VNĐ
               </Text>
               <Text style={styles.textSodu}>
                 => Số dư :
-                {parseFloat(this.state.thu - parseFloat(this.state.chi))} VNĐ
+                {validate(soDu)} VNĐ
               </Text>
             </Form>
           </ListItem>
