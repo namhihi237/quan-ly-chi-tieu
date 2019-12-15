@@ -63,13 +63,33 @@ export default class HistoryScreen extends Component {
     this.props.navigation.addListener('willFocus', () => this.fetchData());
   };
   option = (item, id) => {
+    const keyTong='tong';
     const removeValue = async () => {
       try {
         await AsyncStorage.removeItem(id);
         console.log('Remove item has id : ' + id);
       } catch (e) {
         console.log(e);
-      }
+      };
+    };
+    const updateTong = async () => {
+      try {
+        let sum = await JSON.parse(await AsyncStorage.getItem(keyTong));
+        if(sum){
+        if (item.type === loais.loai01)
+          sum.chi = sum.chi - parseInt(item.money);
+        if (item.type === loais.loai02)
+          sum.thu = sum.thu - parseInt(item.money);
+        if (item.type === loais.loai03)
+          sum.vay = sum.vay - parseInt(item.money);
+        if (item.type === loais.loai04)
+          sum.no = sum.no - parseInt(item.money);
+        await AsyncStorage.setItem(keyTong, JSON.stringify(sum));
+        }
+        console.log(sum);
+      } catch (e) {
+        console.log(e);
+      };
     };
     Alert.alert(`Danh mục`, `Nhấn lựa chọn của bạn`, [
       {
@@ -101,6 +121,8 @@ export default class HistoryScreen extends Component {
           list.splice(key, 1);
           this.setState({dataList: list});
           removeValue();
+          updateTong();
+          this.fetchData();
         },
       },
       {text: 'Cancel', onPress: () => {}},
