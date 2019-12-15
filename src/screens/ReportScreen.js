@@ -174,9 +174,10 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   textHeader: {
-    fontSize: 25,
+    fontSize: 30,
     color: '#00008B',
     marginTop: 10,
+    fontFamily: 'vincHand',
   },
   header: {
     backgroundColor: '#5F9EA0',

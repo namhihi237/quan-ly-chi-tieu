@@ -187,7 +187,9 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   date: {
+    fontFamily: 'vincHand',
     marginLeft: 100,
+    fontSize: 25,
   },
   danhmuc: {
     marginTop: 40,
