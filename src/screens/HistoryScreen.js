@@ -3,11 +3,27 @@ import {Image, Alert, StyleSheet} from 'react-native';
 import {FloatingAction} from 'react-native-floating-action';
 import AsyncStorage from '@react-native-community/async-storage';
 import {List, Container, Text, ListItem, Form} from 'native-base';
+const actions = [
+  {
+    text: 'tăng dần',
+    icon: require('../image/des.png'),
+    name: 'tang',
+    position: 2,
+  },
+  {
+    text: 'add',
+    icon: require('../image/add.png'),
+    name: 'add',
+    position: 3,
+  },
+  {
+    text: 'giảm dần',
+    icon: require('../image/asc.png'),
+    name: 'giam',
+    position: 1,
+  },
+];
 export default class HistoryScreen extends Component {
-  static navigationOptions = {
-    swipeEnabled: true,
-    title: 'Quản Lý Chi Tiêu',
-  };
   constructor(props) {
     super(props);
     this.state = {
@@ -84,6 +100,30 @@ export default class HistoryScreen extends Component {
       {text: 'Cancel', onPress: () => {}},
     ]);
   };
+  sortAsc = () => {
+    let dataAsc = [];
+    dataAsc = this.state.dataList;
+    for (let i = 0; i < dataAsc.length - 1; i++) {
+      for (let j = i + 1; j < dataAsc.length; j++) {
+        if (parseFloat(dataAsc[i].money) > parseFloat(dataAsc[j].money)) {
+          [dataAsc[i], dataAsc[j]] = [dataAsc[j], dataAsc[i]];
+        }
+      }
+    }
+    this.setState({dataList: dataAsc});
+  };
+  sortDes = () => {
+    let dataAsc = [];
+    dataAsc = this.state.dataList;
+    for (let i = 0; i < dataAsc.length - 1; i++) {
+      for (let j = i + 1; j < dataAsc.length; j++) {
+        if (parseFloat(dataAsc[i].money) < parseFloat(dataAsc[j].money)) {
+          [dataAsc[i], dataAsc[j]] = [dataAsc[j], dataAsc[i]];
+        }
+      }
+    }
+    this.setState({dataList: dataAsc});
+  };
   render() {
     const formatMoney = text => {
       return text.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
@@ -119,10 +159,19 @@ export default class HistoryScreen extends Component {
             </ListItem>
           )}></List>
         <FloatingAction
-          onPressMain={() => {
-            this.props.navigation.navigate('Add');
+          onPressItem={name => {
+            if (name === 'add') {
+              this.props.navigation.navigate('Add');
+            }
+            if (name === 'tang') {
+              this.sortAsc();
+            }
+            if (name === 'giam') {
+              this.sortDes();
+            }
           }}
-          showBackground={false}></FloatingAction>
+          showBackground={true}
+          actions={actions}></FloatingAction>
       </Container>
     );
   }
