@@ -29,7 +29,7 @@ const HistoryStack = createStackNavigator(
       headerTitleStyle: {
         fontFamily: 'vincHand',
         fontSize: 25,
-        marginLeft: width / 3.6,
+        marginLeft: width / 4.6,
       },
     },
   },
