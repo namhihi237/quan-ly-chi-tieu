@@ -23,6 +23,12 @@ const actions = [
     position: 1,
   },
 ];
+const loais = {
+  loai01: 'Tiền Chi',
+  loai02: 'Tiền Thu',
+  loai03: 'Cho Vay',
+  loai04: 'Nợ',
+};
 export default class HistoryScreen extends Component {
   constructor(props) {
     super(props);
@@ -154,7 +160,8 @@ export default class HistoryScreen extends Component {
                     </Text>
                   </Text>
                 </Form>
-                <Text note>{item.note ? `Ghi chú :${item.note}` : null}</Text>
+                <Text note style={styles.note}>{item.note ? (`Ghi chú :${item.note}`) : null}</Text>
+                <Text note style={styles.type}>{item.type ? `${item.type}` : null}</Text>
               </Form>
             </ListItem>
           )}></List>
@@ -206,4 +213,12 @@ const styles = StyleSheet.create({
   settingContainer: {
     flexDirection: 'row',
   },
+  type: {
+    fontSize: 13,
+    color: '#cd2222'
+  },
+  note: {
+    color: '#b46417',
+    fontSize: 13
+  }
 });

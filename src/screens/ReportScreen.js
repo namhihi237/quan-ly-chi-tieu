@@ -8,7 +8,7 @@ import {
   Text,
   Header,
 } from 'native-base';
-import {Alert, StyleSheet, Dimensions} from 'react-native';
+import {Alert, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {LineChart, BarChart, ProgressChart} from 'react-native-chart-kit';
 
@@ -98,77 +98,75 @@ export default class ReportScreen extends Component {
       console.log(error);
     }
   };
-
   render() {
-    const formatMoney = text => {
-      return text.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-    };
     const {thu, chi, no, vay} = this.state ;
-    const soDu = parseFloat(thu) - parseFloat(chi);
-    const validate = (money) =>{
-      return money? formatMoney(parseFloat(money)) : null; 
+    const soDu = thu - chi;
+    const formatMoney = (money = 0) =>{
+      return money.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
     }
     return (
       <Container>
-        <Header style={styles.header}>
-          <Text style={styles.textHeader}>Báo Cáo Chi Tiêu</Text>
-        </Header>
-        <List>
-          <ListItem>
-            <Form>
-              <Text style={styles.textLabel}>
-                Tổng thu: {validate(thu)} VNĐ{` `}
-              </Text>
-              <Text style={styles.textLabel}>
-                Tổng chi: {validate(chi)} VNĐ
-              </Text>
-              <Text style={styles.textLabel}>Tổng nợ: {validate(no)} VNĐ</Text>
-              <Text style={styles.textLabel}>
-                Cho vay: {validate(vay)} VNĐ
-              </Text>
-              <Text style={styles.textSodu}>
-                => Số dư :
-                {validate(soDu)} VNĐ
-              </Text>
-            </Form>
-          </ListItem>
-          <ListItem>
-            <BarChart
-              data={{
-                labels: this.state.labelLine, // this.state.lableBar
-                datasets: [
-                  {
-                    data: this.state.dataLine, // this.state.dataBar
-                  },
-                ],
-              }}
-              width={(Dimensions.get('window').width * 10) / 11}
-              height={180}
-              yAxisLabel={'$'}
-              chartConfig={chartConfig}
-              verticalLabelRotation={0}
-            />
-          </ListItem>
-          <ListItem>
-            <ProgressChart
-              data={{
-                labels: ['Chi', 'Thu', 'No', 'Vay'], // optional
-                data: this.state.dataPro,
-              }}
-              width={(Dimensions.get('window').width * 10) / 11}
-              height={200}
-              chartConfig={{
-                backgroundGradientFrom: 'red',
-                backgroundGradientFromOpacity: 0,
-                backgroundGradientTo: 'red',
-                backgroundGradientToOpacity: 0.5,
-                color: (opacity = 0.5) => `rgba(76, 200, 85, ${opacity})`,
-                strokeWidth: 2, // optional, default 3
-                barPercentage: 0.5,
-              }}
-            />
-          </ListItem>
-        </List>
+        <ScrollView>
+          <Header style={styles.header}>
+            <Text style={styles.textHeader}>Báo Cáo Chi Tiêu</Text>
+          </Header>
+          <List>
+            <ListItem>
+              <Form>
+                <Text style={styles.textLabel}>
+                  Tổng thu: {formatMoney(thu)} VNĐ{` `}
+                </Text>
+                <Text style={styles.textLabel}>
+                  Tổng chi: {formatMoney(chi)} VNĐ
+                </Text>
+                <Text style={styles.textLabel}>Tổng nợ: {formatMoney(no)} VNĐ</Text>
+                <Text style={styles.textLabel}>
+                  Cho vay: {formatMoney(vay)} VNĐ
+                </Text>
+                <Text style={styles.textSodu}>
+                  => Số dư : {`  `}
+                  {formatMoney(soDu)} VNĐ
+                </Text>
+              </Form>
+            </ListItem>
+            <ListItem>
+              <BarChart
+                data={{
+                  labels: this.state.labelLine, // this.state.lableBar
+                  datasets: [
+                    {
+                      data: this.state.dataLine, // this.state.dataBar
+                    },
+                  ],
+                }}
+                width={(Dimensions.get('window').width * 10) / 11}
+                height={180}
+                yAxisLabel={'$'}
+                chartConfig={chartConfig}
+                verticalLabelRotation={0}
+              />
+            </ListItem>
+            <ListItem>
+              <ProgressChart
+                data={{
+                  labels: ['Chi', 'Thu', 'No', 'Vay'], // optional
+                  data: this.state.dataPro,
+                }}
+                width={(Dimensions.get('window').width * 10) / 11}
+                height={200}
+                chartConfig={{
+                  backgroundGradientFrom: 'red',
+                  backgroundGradientFromOpacity: 0,
+                  backgroundGradientTo: 'red',
+                  backgroundGradientToOpacity: 0.5,
+                  color: (opacity = 0.5) => `rgba(76, 200, 85, ${opacity})`,
+                  strokeWidth: 2, // optional, default 3
+                  barPercentage: 0.5,
+                }}
+              />
+            </ListItem>
+          </List>
+        </ScrollView>
       </Container>
     );
   }
