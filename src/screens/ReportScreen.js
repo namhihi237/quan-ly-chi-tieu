@@ -104,7 +104,7 @@ export default class ReportScreen extends Component {
       return text.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
     };
     const {thu, chi, no, vay} = this.state ;
-    const soDo = parseFloat(thu) - parseFloat(chi);
+    const soDu = parseFloat(thu) - parseFloat(chi);
     const validate = (money) =>{
       return money? formatMoney(parseFloat(money)) : null; 
     }
