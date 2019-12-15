@@ -1,7 +1,6 @@
 /**
  * @format
  */
-
 import {AppRegistry} from 'react-native';
 import {name as appName} from './app.json';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
@@ -29,10 +28,7 @@ const HistoryStack = createStackNavigator(
     },
   },
 );
-// const SettingStack = createStackNavigator({
-//   Setting: {screen: SettingScreen},
-//   Detail: {screen: DetailScreen},
-// });
+
 const TabnavigatorConfigs = {
   animationEnabled: true,
   tabBarOptions: {
